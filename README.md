@@ -16,7 +16,7 @@ The POTA website does offer [all_parks.csv](https://pota.app/all_parks.csv) (lis
 
 ![ParkList for GB-ENG showing Activation/Attempts Data](/img/parklist.png)
 
-Just press the “DOWNLOAD” button (you may have to be logged in to see this, as it contains information personal to you) and that yields a CSV file for us. This file, as downloaded, is what you call the script with. Mine was called “England.csv”.
+Just press the “DOWNLOAD” button (you have to be logged in to see this, as it contains information personal to you) and that yields a CSV file for us. This file, as downloaded, is what you call the script with. Mine was called “England.csv”.
 
 ![ParkList Download CSV](/img/parklist_download_csv.png)
 

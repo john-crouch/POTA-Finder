@@ -112,7 +112,7 @@ if maxactivations > -1:
     park_list = list(filter(lambda x: x.activations <= maxactivations, park_list))
 
 ## Print requested
-print("Showing %u closest parks (%s)\n" % (showcount, ("filtered to %u or fewer activations" % (maxactivations)) if maxactivations > 0 else "unfiltered"))
+print("Showing %u closest parks (%s)\n" % (showcount, ("filtered: maximum of %u activations" % (maxactivations)) if maxactivations >= 0 else "unfiltered"))
 showcount = len(park_list) + 1 if showcount == 0 else showcount
 for park in park_list[0:showcount]:
     print(park)
