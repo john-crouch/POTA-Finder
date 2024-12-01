@@ -26,6 +26,7 @@ parser.add_argument('-q', '--qth', required=True, help='Your reference location,
 parser.add_argument('-s', '--show-max', type=int, default=3, help='Maximum results to print out')
 parser.add_argument('-m', '--max-activations', type=int, default=-1, help='Maximum activations to display')
 parser.add_argument('-u', '--show-urls', action='store_true', default=False, help='Output URLs to be clicked on')
+parser.add_argument('-d', '--dist-unit', default='km', help='Distance unit to display, km or mi')
 args = parser.parse_args()
 
 progname = sys.argv[0]
@@ -34,6 +35,7 @@ qthlocation = args.qth
 showcount = args.show_max
 maxactivations = args.max_activations
 showurls = args.show_urls
+distunit = args.dist_unit
 
 ## Location varables
 myqth = (None,None)
@@ -67,7 +69,15 @@ class ParkObj:
         self.qsos = self._checkinp(qsos)
         self.my_activations = self._checkinp(my_activations)
         self.my_hunted_qsos = self._checkinp(my_hunted_qsos)
-        self.distance = geopy.distance.distance(myqth, self.latlon).km # also ".miles"
+         # also ".miles"
+
+        # Calculate distance based on unit
+        if distunit == 'km':
+            self.distance = geopy.distance.distance(myqth, self.latlon).km
+        elif distunit == 'mi':
+            self.distance = geopy.distance.distance(myqth, self.latlon).miles
+        else:
+            raise ValueError("Unsupported distance unit. Use 'km' or 'mi'.")
         #print("%s is %.1f km away." % (self.name, self.distance))
     
     def __str__(self):
@@ -76,7 +86,7 @@ class ParkObj:
         if showurls:
             str += ("\tPark Link:   https://pota.app/#/park/%s\n" % (self.reference))
         str += "\tLocation:    %f %f (%s)\n" % (self.latlon[0], self.latlon[1], self.grid)
-        str += "\tDistance:    %.1f km from %s\n" % (self.distance, qthlocation)
+        str += "\tDistance:    %.1f %s from %s\n" % (self.distance, "km" if distunit == "km" else "mi", qthlocation)
         str += "\tAttempts:    %u (%u qsos)\n" % (self.attempts, self.qsos)
         str += "\tActivations: %u" % (self.activations)
         if self.my_activations > 0:
