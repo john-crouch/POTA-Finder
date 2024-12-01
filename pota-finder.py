@@ -27,15 +27,17 @@ parser.add_argument('-s', '--show-max', type=int, default=3, help='Maximum resul
 parser.add_argument('-m', '--max-activations', type=int, default=-1, help='Maximum activations to display')
 parser.add_argument('-u', '--show-urls', action='store_true', default=False, help='Output URLs to be clicked on')
 parser.add_argument('-d', '--dist-unit', default='km', help='Distance unit to display, km or mi')
+parser.add_argument('-f', '--max-distance', type=int, default=0, help='Maximum activations to display')
 args = parser.parse_args()
 
-progname = sys.argv[0]
-potafile = args.parklist_export
-qthlocation = args.qth
-showcount = args.show_max
-maxactivations = args.max_activations
-showurls = args.show_urls
-distunit = args.dist_unit
+progname        = sys.argv[0]
+potafile        = args.parklist_export
+qthlocation     = args.qth
+showcount       = args.show_max
+maxactivations  = args.max_activations
+showurls        = args.show_urls
+distunit        = args.dist_unit
+maxDistance     = args.max_distance
 
 ## Location varables
 myqth = (None,None)
@@ -69,7 +71,6 @@ class ParkObj:
         self.qsos = self._checkinp(qsos)
         self.my_activations = self._checkinp(my_activations)
         self.my_hunted_qsos = self._checkinp(my_hunted_qsos)
-         # also ".miles"
 
         # Calculate distance based on unit
         if distunit == 'km':
@@ -118,13 +119,25 @@ print("Imported %u parks from database." % (len(park_list)))
 park_list.sort(key=lambda x: x.distance, reverse=False)
 
 ## Filter the Park List
+# Filter by maximum activations if set
 if maxactivations > -1:
     park_list = list(filter(lambda x: x.activations <= maxactivations, park_list))
 
+# Filter by maximum distance if set (non-zero)
+if maxDistance > 0:
+    park_list = list(filter(lambda x: x.distance <= maxDistance, park_list))
+
 ## Print requested
-print("Showing %u closest parks (%s)\n" % (showcount, ("filtered: maximum of %u activations" % (maxactivations)) if maxactivations >= 0 else "unfiltered"))
+print("Showing %u closest parks (%s)\n" % (
+    showcount, 
+    ("filtered: maximum of %u activations within %s %s" % (
+        maxactivations,
+        "unlimited" if maxDistance == 0 else "%u" % maxDistance,
+        distunit
+    )) if maxactivations >= 0 or maxDistance > 0 else "unfiltered"
+))
 showcount = len(park_list) + 1 if showcount == 0 else showcount
 for park in park_list[0:showcount]:
     print(park)
     
-print("Showed %u parks out of %u matching." % (len(park_list[0:showcount]), len(park_list)))
+#print("Showed %u parks out of %u matching." % (len(park_list[0:showcount]), len(park_list)))
